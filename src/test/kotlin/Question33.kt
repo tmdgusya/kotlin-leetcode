@@ -104,7 +104,7 @@ internal class Question33 : BehaviorSpec({
         `when`("find a target") {
             val expected = solution.search(nums = nums, target = target)
             then("index of target is 5") {
-                expected shouldBe 5
+                expected shouldBe -1
             }
         }
     }
