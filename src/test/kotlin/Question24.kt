@@ -106,3 +106,10 @@ fun List<ListNode24>.printList() {
         println(ele.`val`)
     }
 }
+
+/**
+ * Optimizing Solution
+ *
+ * 1. Save the Prev Node each Iteration (if i > 0)
+ * 2. Rebalancing Wtih A - B - C Nodes
+ */
