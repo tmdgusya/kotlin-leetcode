@@ -22,7 +22,7 @@ fun hasPathSum(root: TreeNode?, targetSum: Int): Boolean {
     return _root.addAll(_root.`val`, targetSum)
 }
 
-fun TreeNode.isSingle(): Boolean {
+private fun TreeNode.isSingle(): Boolean {
     return this.left == null && this.right == null
 }
 
