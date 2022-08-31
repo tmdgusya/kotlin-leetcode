@@ -1,6 +1,7 @@
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.LinkedList
+import java.util.Stack
 
 class Question113 : FunSpec({
 
@@ -85,8 +86,32 @@ fun pathSumOptimize(root: TreeNode?, targetSum: Int): List<List<Int>> {
             val tmp = _result + mutableListOf(it.`val`)
             queue.add(Triple(it, value + it.`val`, tmp.toMutableList()))
         }
+    }
+    return result
+}
+
+fun pathSumOptimize2(root: TreeNode?, targetSum: Int): List<List<Int>> {
+    val result = mutableListOf<List<Int>>()
+    val _root = root ?: return result
+
+    val _tmp = Triple(_root, _root.`val`, mutableListOf(_root.`val`))
+    val queue = Stack<Triple<TreeNode, Int, MutableList<Int>>>()
+
+    queue.add(_tmp)
+
+    while (queue.isNotEmpty()) {
+        val (node, value, _result) = queue.pop()
+
+        if (node.isLeaf() && value == targetSum) {
+            result.add(_result)
+        }
 
         node.right?.let {
+            val tmp = _result + mutableListOf(it.`val`)
+            queue.add(Triple(it, value + it.`val`, tmp.toMutableList()))
+        }
+
+        node.left?.let {
             val tmp = _result + mutableListOf(it.`val`)
             queue.add(Triple(it, value + it.`val`, tmp.toMutableList()))
         }
