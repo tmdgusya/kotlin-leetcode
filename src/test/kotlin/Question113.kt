@@ -1,5 +1,6 @@
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import java.util.LinkedList
 
 class Question113 : FunSpec({
 
@@ -35,7 +36,7 @@ class Question113 : FunSpec({
 
 
     test("case 1") {
-        val result = pathSum(root, 22)
+        val result = pathSumOptimize(root, 22)
 
         result shouldBe listOf(
             listOf(5,4,11,2),
@@ -62,6 +63,35 @@ fun pathSum(root: TreeNode?, targetSum: Int): List<List<Int>> {
     _root.right?.addAll(_root.`val`, targetSum, list, result)
 
     return result.toList()
+}
+
+fun pathSumOptimize(root: TreeNode?, targetSum: Int): List<List<Int>> {
+    val result = mutableListOf<List<Int>>()
+    val _root = root ?: return result
+
+    val _tmp = Triple(_root, _root.`val`, mutableListOf(_root.`val`))
+    val queue = LinkedList<Triple<TreeNode, Int, MutableList<Int>>>()
+
+    queue.add(_tmp)
+
+    while (queue.isNotEmpty()) {
+        val (node, value, _result) = queue.pop()
+
+        if (node.isLeaf() && value == targetSum) {
+            result.add(_result)
+        }
+
+        node.left?.let {
+            val tmp = _result + mutableListOf(it.`val`)
+            queue.add(Triple(it, value + it.`val`, tmp.toMutableList()))
+        }
+
+        node.right?.let {
+            val tmp = _result + mutableListOf(it.`val`)
+            queue.add(Triple(it, value + it.`val`, tmp.toMutableList()))
+        }
+    }
+    return result
 }
 
 fun TreeNode.addAll(memo: Int, targetSum: Int, list: MutableList<Int>, result: MutableList<List<Int>>) {
