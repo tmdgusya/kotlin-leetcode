@@ -1,6 +1,7 @@
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.util.LinkedList
+import kotlin.math.pow
 
 class Question1148 : FunSpec({
     test("Case2") {
@@ -18,6 +19,8 @@ class Question1148 : FunSpec({
         result shouldBe 3
     }
 })
+
+
 
 fun goodNodes(root: TreeNode?): Int {
     val _root = root ?: return -1
