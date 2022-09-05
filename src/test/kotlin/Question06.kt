@@ -37,7 +37,7 @@ private fun createMutableListBy(givenNum: Int): List<MutableList<Char>> {
     val result = mutableListOf<MutableList<Char>>()
 
     for (i in 0 until givenNum) {
-        result.add(mutableListOf<Char>())
+        result.add(mutableListOf())
     }
 
     return result
