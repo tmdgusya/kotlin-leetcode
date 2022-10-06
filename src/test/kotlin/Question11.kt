@@ -52,23 +52,35 @@ internal class Question11Solution {
     fun maxArea(height: IntArray): Int {
         val calculator = CalculateContainerAreaService()
         val store = StoreMaxContainerVolumeService()
-        var leftPointer = 0
-        var rightPointer = height.lastIndex
+        val leftPointer = 0
+        val rightPointer = height.lastIndex
+        return recursive(leftPointer, rightPointer, store, calculator, height)
+    }
 
-        while (leftPointer < rightPointer) {
-            val volume = calculator.doService(
-                line1 = leftPointer to height[leftPointer],
-                line2 = rightPointer to height[rightPointer]
-            )
-            store.save(volume)
+    /**
+     * Recursive 훈련
+     */
+    fun recursive(
+        leftPointer: Int,
+        rightPointer: Int,
+        store: StoreMaxContainerVolumeService,
+        calculator: CalculateContainerAreaService,
+        height: IntArray,
+    ): Int {
+        // end condition
+        if (leftPointer >= rightPointer) return store.getMaxValue()
 
-            if (height[leftPointer] < height[rightPointer]) {
-                leftPointer++
-            } else {
-                rightPointer--
-            }
+        val result = calculator.doService(
+            line1 = leftPointer to height[leftPointer],
+            line2 = rightPointer to height[rightPointer],
+        )
+        store.save(result)
+
+        return if (height[leftPointer] < height[rightPointer]) {
+            recursive(leftPointer + 1, rightPointer, store, calculator, height)
+        } else {
+            recursive(leftPointer, rightPointer - 1, store, calculator, height)
         }
-        return store.getMaxValue()
     }
 
     class CalculateContainerAreaService {
