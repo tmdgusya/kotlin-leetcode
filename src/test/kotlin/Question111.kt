@@ -1,5 +1,6 @@
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import java.util.LinkedList
 
 class Question111 : FunSpec({
 
@@ -63,6 +64,29 @@ private fun TreeNode.findMinDepth(depth: Int): Int {
     }
 
     return leftDepth.coerceAtMost(rightDepth)
+}
+
+private fun bfs(root: TreeNode): Int {
+    val queue = LinkedList<Pair<TreeNode, Int>>();
+
+    queue.add(root to 1)
+
+    var currentDepth = 0
+    while (queue.isNotEmpty()) {
+        val nodeData = queue.poll()
+        val currentNode = nodeData.first
+        currentDepth = nodeData.second
+
+        if (currentNode.left != null) {
+            queue.add(currentNode.left!! to currentDepth + 1)
+        }
+
+        if (currentNode.right != null) {
+            queue.add(currentNode.right!! to currentDepth + 1)
+        }
+    }
+
+    return currentDepth
 }
 
 private fun TreeNode.isFinished(): Boolean {
