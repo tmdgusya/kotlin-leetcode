@@ -1,5 +1,4 @@
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import java.util.LinkedList
 
@@ -29,46 +28,51 @@ class Question103 : FunSpec({
     }
 })
 
-fun mySolution(root: TreeNode?): List<List<Int>> {
-    val _root = root ?: return emptyList()
+private typealias Depth = Int
+private typealias PrintResults = ArrayDeque<Depth>
+private typealias Queue = LinkedList<Pair<TreeNode, Depth>>
 
-    val queue = LinkedList<Pair<TreeNode, Int>>()
-    val resultList = mutableListOf<List<Int>>()
-    val map = HashMap<Int, ArrayDeque<Int>>()
+fun mySolution(root: TreeNode?): List<List<Int>> = root?.let { root ->
+    (Queue() to HashMap<Depth, PrintResults>())
+        .also { (queue, _) -> queue.add(root to 1) }
+        .also { (_, printNodeResultByDepth) -> printNodeResultByDepth.initAndPrint(0, root.`val`) }
+        .also { (queue, printNodeResultByDepth) -> queue.traversalNodeForSavingResult(printNodeResultByDepth) }
+        .let { (_, printNodeResultByDepth) -> printNodeResultByDepth.toResult() }
+} ?: emptyList()
 
-    queue.add(_root to 1)
+private fun HashMap<Depth, PrintResults>.toResult() =
+    this.values.filter { it.isNotEmpty() }.map { it.toList() }
 
-    // init
-    resultList.add(listOf(_root.`val`))
+private fun HashMap<Depth, PrintResults>.init(depth: Depth): HashMap<Depth, PrintResults> = this.also { it[depth] = ArrayDeque() }
 
+private fun HashMap<Depth, PrintResults>.initAndPrint(depth: Depth, value: Int) =
+    this.init(depth).let { it[depth]!!.add(value) }
 
-    while (queue.isNotEmpty()) {
-
-        val (node, depth) = queue.pop()
-        if (!map.containsKey(depth)) map[depth] = ArrayDeque()
-
-        node.left?.let {
-            queue.add(it to depth + 1)
-            addListByZigZag(map, depth, it.`val`)
+private fun LinkedList<Pair<TreeNode, Depth>>.traversalNodeForSavingResult(
+    printNodeResultByDepth: HashMap<Depth, PrintResults>,
+) = this.let { queue ->
+        while (queue.isNotEmpty()) {
+            this.pop().also {(_, depth) ->
+                if (!printNodeResultByDepth.containsKey(depth)) printNodeResultByDepth.init(depth)
+            }.let { (node, depth) ->
+                node.left?.printAndTraversalNextNode(depth, printNodeResultByDepth, this)
+                node.right?.printAndTraversalNextNode(depth, printNodeResultByDepth, this)
+            }
         }
-
-        node.right?.let {
-            queue.add(it to depth + 1)
-            addListByZigZag(map, depth, it.`val`)
-        }
-
-        if (map[depth]!!.isNotEmpty() && resultList.lastIndex < depth) resultList.add(map[depth]!!.toList())
-        if (map[depth]!!.isNotEmpty() && resultList.lastIndex >= depth) resultList[depth] = map[depth]!!.toList()
-
-    }
-    return resultList
 }
 
-private fun addListByZigZag(map: Map<Int,  ArrayDeque<Int>>, depth: Int, value: Int) {
-    // addLast
-    if (depth % 2 == 1) {
-        map[depth]!!.addFirst(value)
-    } else {
-        map[depth]!!.add(value)
-    }
+private fun TreeNode.printAndTraversalNextNode(
+    depth: Int,
+    printNodeResultByDepth: HashMap<Depth, PrintResults>,
+    queue: LinkedList<Pair<TreeNode, Depth>>,
+) = this.also {
+    queue.add(it to depth + 1)
+}.let {
+    printNodeResultByDepth.addListByZigZag(depth, it.`val`)
+}
+
+private fun Map<Depth, PrintResults>.addListByZigZag(depth: Depth, value: Int) = if (depth % 2 == 1) {
+    this[depth]!!.addFirst(value)
+} else {
+    this[depth]!!.add(value)
 }
