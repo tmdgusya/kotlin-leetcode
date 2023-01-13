@@ -15,7 +15,7 @@ class Question19 : FunSpec({
         _3.next = _4
         _4.next = _5
 
-        removeNthFromEnd(head, 2)
+        removeNthFromEndWithDummy(head, 2)
 
         _3.next shouldBe _5
     }
@@ -23,7 +23,7 @@ class Question19 : FunSpec({
     test("case 02") {
         val head = ListNode(1)
 
-        val result = removeNthFromEnd(head, 1)
+        val result = removeNthFromEndWithDummy(head, 1)
 
         result shouldBe null
     }
@@ -94,4 +94,31 @@ fun removeNthFromEnd(head: ListNode?, n: Int): ListNode? {
     storage.deleteNode(n)
 
     return storage.first
+}
+
+fun removeNthFromEndWithDummy(head: ListNode?, n: Int): ListNode? {
+    if (head == null) return null
+    val dummy = ListNode(0)
+    val length = head.length()
+    dummy.next = head
+
+    var delIdx = length - n
+    var node: ListNode? = dummy
+    while (delIdx != 0) {
+        delIdx--;
+        node = node?.next
+    }
+
+    node?.next = node?.next?.next
+    return dummy.next
+}
+
+fun ListNode.length(): Int {
+    var length = 0
+    var node: ListNode? = this
+    while (node != null) {
+        length++
+        node = node.next
+    }
+    return length
 }
