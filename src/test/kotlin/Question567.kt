@@ -3,24 +3,20 @@ import io.kotest.matchers.shouldBe
 import java.util.Arrays
 
 class Question567 : FunSpec({
+
+    fun check(s1: String, s2: String, expected: Boolean) {
+        checkInclusion(s1, s2) shouldBe expected
+    }
+
     test("case 01") {
-        val given = "ab"
-        val s2 = "eidbaooo"
-
-        val expected = true
-
-        checkInclusion(given, s2) shouldBe expected
+        check(s1 = "ab", s2 = "eidbaooo", expected = true)
     }
 
     test("case 02") {
-        val given = "ab"
-        val s2 = "eidboaoo"
-
-        val expected = false
-
-        checkInclusion(given, s2) shouldBe expected
+        check(s1 = "ab", s2 = "eidboaoo", expected = false)
     }
 })
+
 
 fun checkInclusion(s1: String, s2: String): Boolean {
     // sliding windows approach
