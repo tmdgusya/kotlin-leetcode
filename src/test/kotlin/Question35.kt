@@ -23,25 +23,39 @@ class Question35 : FunSpec({
 //}
 
 // O(logN)
+//fun searchInsert(nums: IntArray, target: Int): Int {
+//    return searchInsert(nums, target, 0)
+//}
+//
+//fun searchInsert(nums: IntArray, target: Int, pointer: Int): Int {
+//    if (nums.isEmpty()) return pointer
+//    if (nums.size == 1 && target > nums[0]) return pointer + 1
+//    if (nums.size == 1 && target <= nums[0]) return pointer
+//    // 중간 값을
+//    val middleIndex = nums.size / 2
+//    val middle = nums[middleIndex]
+//
+//    return when {
+//        middle == target -> middleIndex
+//        middle < target -> searchInsert(
+//            nums.slice(IntRange(middleIndex + 1, nums.lastIndex)).toIntArray(),
+//            target,
+//            pointer + middleIndex + 1
+//        )
+//        else -> searchInsert(nums.slice(IntRange(0, middleIndex - 1)).toIntArray(), target, pointer)
+//    }
+//}
+
 fun searchInsert(nums: IntArray, target: Int): Int {
-    return searchInsert(nums, target, 0)
-}
-
-fun searchInsert(nums: IntArray, target: Int, pointer: Int): Int {
-    if (nums.isEmpty()) return pointer
-    if (nums.size == 1 && target > nums[0]) return pointer + 1
-    if (nums.size == 1 && target <= nums[0]) return pointer
-    // 중간 값을
-    val middleIndex = nums.size / 2
-    val middle = nums[middleIndex]
-
-    return when {
-        middle == target -> middleIndex
-        middle < target -> searchInsert(
-            nums.slice(IntRange(middleIndex + 1, nums.lastIndex)).toIntArray(),
-            target,
-            pointer + middleIndex + 1
-        )
-        else -> searchInsert(nums.slice(IntRange(0, middleIndex - 1)).toIntArray(), target, pointer)
+    var start = 0
+    var end = nums.lastIndex
+    while (start <= end) {
+        val middle = (start + end) / 2
+        when {
+            nums[middle] == target -> return middle
+            nums[middle] < target -> start = middle + 1
+            else -> end = middle - 1
+        }
     }
+    return start
 }
