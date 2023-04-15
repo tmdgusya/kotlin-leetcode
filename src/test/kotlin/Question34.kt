@@ -16,6 +16,7 @@ class Question34: FunSpec({
 fun searchRange(nums: IntArray, target: Int): IntArray {
     val first = search(nums, target, true)
     val second = search(nums, target, false)
+
     return intArrayOf(first, second)
 }
 
